@@ -191,46 +191,41 @@ square toot of a number
 
 app.post("/submission", (req, res) => {
   var key = req.body.key;
+  var first = parseInt(req.body.firstNumber);
+  var second = parseInt(req.body.secondNumber);
   async.auto(
     {
       sum: function (cb) {
-       
-        if(key!=="add")
-          return cb(null,false)
-        var first = parseInt(req.body.firstNumber);
-        var second = parseInt(req.body.secondNumber);
-        
+        if (key !== "add") return cb(null, false);
+
         var sum = Number(first + second);
         return cb(null, sum);
       },
-      sub:function (cb) {
-        if(key!=="sub")
-          return cb(null,false)
-        var first = parseInt(req.body.firstNumber);
-        var second = parseInt(req.body.secondNumber);
+      sub: function (cb) {
+        if (key !== "sub") return cb(null, false);
+
         var sub = Number(first - second);
         return cb(null, sub);
       },
 
-      areaCircle:function (cb) {
-        if(key!=="areaCircle")
-          return cb(null,false)
-        var first = parseInt(req.body.firstNumber);
-        var second = parseInt(req.body.secondNumber);
-        var circle = Number(3.14*first*first);
-        return cb(null,circle);
-      },
+      areaCircle: function (cb) {
+        if (key !== "areaCircle") return cb(null, false);
 
+        var circle = Number(3.14 * first * first);
+        return cb(null, circle);
+      },
+      sqrt : function (cb){
+        if(key !=="sqrt") return cb(null,false)
+
+        var sqrt = Math.sqrt(first)
+        return cb(null,sqrt)
+      }
     },
     function (err, results) {
       if (err) {
         return res.send.status(403).json({ error: err });
       }
-      return res.json({ results: results[key]});
+      return res.json({ results: results });
     }
   );
-});
-
-app.get("/math", async (req, res) => {
-  res.send({ name: "jatin" });
 });
