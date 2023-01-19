@@ -6,17 +6,16 @@ export default function NavBar(props) {
                     <li>
                         <a href="#"> Home </a>
                     </li>
+
                     <li>
-                        <a href="#"> About </a>
+                        <a href="#"> My Notes</a>
                     </li>
                     <li>
-                        <a href="#"> My Notes </a>
-                    </li>
-                    <li> <a href="#"> All Notes </a>
+                        
+                        <a href="#"> All Notes </a>
                     </li>
                 </ul>
             </nav>
         </header>
     );
-
 }

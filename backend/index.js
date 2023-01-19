@@ -1,10 +1,11 @@
 const express = require("express");
 const db = require("./db.json");
-const fs = require("fs"); //file system
+const fs = require("fs");
 const bodyParser = require("body-parser");
 const async = require("async");
 const userModel = require("./userModel");
 const maths = require("./maths");
+const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
@@ -16,6 +17,7 @@ const { response } = require("express");
 const { stringify } = require("querystring");
 
 const port = process.env.BACKEND_PORT; //Backend Port Running on 5000
+const secretKey = process.env.JWT_SECRET
 
 const app = express();
 
@@ -77,22 +79,6 @@ app.post("/newnotes", async (req, res) => {
   res.send("Note Sucessfully Created");
 });
 
-app.listen(port, () => {
-  console.log("App has been started");
-});
-
-app.post("/addNewUser", async (req, res) => {
-  async.auto();
-
-  const data = new userModel({
-    email: req.body.req,
-    password: req.body.password,
-    createdAt: req.body.createdAt,
-  });
-  const val = await data.save();
-  res.send("User Created!");
-});
-
 //fetch and add the notes and Users from the DB
 
 app.get("/concat", (req, res) => {
@@ -134,6 +120,7 @@ app.delete('/delete',()=>{
 })
 
 */
+
 //GET request to get users
 app.get("/getUsers", (req, res) => {
   async.auto(
@@ -158,21 +145,60 @@ app.get("/getUsers", (req, res) => {
 });
 
 //Post API to Add new User
-app.post("/add", (req, res) => {
+app.post("/signup", (req, res) => {
   async.auto(
     {
       users: function (cb) {
-        const data = new userModel({
-          email: req.body.email,
-          password: req.body.password,
+        var userData = { email: req.body.email, password: req.body.password }
+        var authToken = jwt.sign(userData,secretKey)
+        userData.authToken = jwt.sign(userData,secretKey)
+        userModel.create({ userData }, (err, user) => {
+          if (err) {
+            return cb("Unable to Add!");
+          }
+          console.log(user);
+          return cb(null, user);
         });
       },
     },
     function (err, results) {
       if (err) {
-        return res.send.status(403).json({ error: err });
+        return res.status(403).json({ error: err });
       }
-      return res.send("Hello From this side");
+      return res.send(results.users);
+    }
+  );
+});
+
+//POST Request For Login
+app.post("/login", (req, res) => {
+  async.auto(
+    {
+      users: function (cb) {
+        userModel.findOne(
+          { email: req.body.email, password: req.body.password },
+          (err, user) => {
+            if (err) {
+              return cb("Unable to Login!");
+            }
+            console.log(user);
+            
+            if (user) {
+              return cb(null, true);
+            }
+            return cb(null, false);
+          }
+        );
+      },
+    },
+    function (err, results) {
+      if (err) {
+        return res.status(403).json({ error: err });
+      }
+      if (results.user == true) {
+        return res.json({ results: "Succesfully Created" });
+      }
+      return res.json({ results: "Login Failed" });
     }
   );
 });
@@ -214,12 +240,12 @@ app.post("/submission", (req, res) => {
         var circle = Number(3.14 * first * first);
         return cb(null, circle);
       },
-      sqrt : function (cb){
-        if(key !=="sqrt") return cb(null,false)
+      sqrt: function (cb) {
+        if (key !== "sqrt") return cb(null, false);
 
-        var sqrt = Math.sqrt(first)
-        return cb(null,sqrt)
-      }
+        var sqrt = Math.sqrt(first);
+        return cb(null, sqrt);
+      },
     },
     function (err, results) {
       if (err) {
@@ -228,4 +254,8 @@ app.post("/submission", (req, res) => {
       return res.json({ results: results });
     }
   );
+});
+
+app.listen(port, () => {
+  console.log("App has been started on Port : 5000");
 });
