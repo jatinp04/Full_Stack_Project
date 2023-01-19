@@ -4,28 +4,31 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const async = require("async");
 const userModel = require("./userModel");
-const maths = require("./maths");
+// const maths = require("./maths");
 const jwt = require("jsonwebtoken");
+const cookieParser = require('cookie-parser')
+const verify = require('./services/authService')
 
 require("dotenv").config();
 
-const MongoDB = require("./mongo");
-const { mongo } = require("mongoose");
+const MongoDB = require("./services/databaseService");
+// const { mongo } = require("mongoose");
 const notemodel = require("./notemodel");
 const cors = require("cors");
-const { response } = require("express");
-const { stringify } = require("querystring");
+// const { response } = require("express");
+// const { stringify } = require("querystring");
 
 const port = process.env.BACKEND_PORT; //Backend Port Running on 5000
-const secretKey = process.env.JWT_SECRET
+const secretKey = process.env.JWT_SECRET;
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+app.use(cookieParser())
 
-MongoDB.start(); //db has been started
+MongoDB.start(); //To Start MongoDB service
 
 app.get("/notes", (req, res) => {
   let notes = res.json({
@@ -35,7 +38,7 @@ app.get("/notes", (req, res) => {
 
 //auto , series and parallel async functions
 
-app.get("/newnotes", (req, res) => {
+app.get("/newnotes",verify, (req, res) => {
   async.auto(
     {
       notes: function (cb) {
@@ -149,10 +152,11 @@ app.post("/signup", (req, res) => {
   async.auto(
     {
       users: function (cb) {
-        var userData = { email: req.body.email, password: req.body.password }
-        var authToken = jwt.sign(userData,secretKey)
-        userData.authToken = jwt.sign(userData,secretKey)
-        userModel.create({ userData }, (err, user) => {
+        var userData = { email: req.body.email, password: req.body.password };
+        // var authToken = jwt.sign(userData,secretKey)
+        userData.authToken = jwt.sign(userData, secretKey);
+
+        userModel.create(userData, (err, user) => {
           if (err) {
             return cb("Unable to Add!");
           }
@@ -171,22 +175,29 @@ app.post("/signup", (req, res) => {
 });
 
 //POST Request For Login
-app.post("/login", (req, res) => {
+
+app.post("/login",(req, res) => {
   async.auto(
     {
       users: function (cb) {
         userModel.findOne(
           { email: req.body.email, password: req.body.password },
           (err, user) => {
+            
             if (err) {
-              return cb("Unable to Login!");
+
+              return cb(err);
             }
             console.log(user);
-            
-            if (user) {
-              return cb(null, true);
+            try {
+              var token = jwt.sign(
+                { email: user.email, password: user.password },
+                secretKey
+              );
+              return cb(null, token);
+            } catch (err) {
+              return cb(null, false);
             }
-            return cb(null, false);
           }
         );
       },
@@ -195,12 +206,29 @@ app.post("/login", (req, res) => {
       if (err) {
         return res.status(403).json({ error: err });
       }
-      if (results.user == true) {
-        return res.json({ results: "Succesfully Created" });
+      console.log(results);
+
+      if (!results.users) {
+        return res.json({ results: "unable to login" });
       }
-      return res.json({ results: "Login Failed" });
+      res
+        .cookie("authToken", results.users, {
+          httpOnly: true,
+          expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+        })
+        .send(" succesfully logged in");
     }
   );
+});
+
+//GET API for Logout
+app.get("/logout", (req, res) => {
+  res
+    .cookie("authToken", null, {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+    .send("Succesfully logged Out!");
 });
 
 /**
