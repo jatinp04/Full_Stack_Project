@@ -1,21 +1,28 @@
 export default function NavBar(props) {
-    return (
-        <header>
-            <nav>
-                <ul>
-                    <li>
-                        <a href="#"> Home </a>
-                    </li>
 
-                    <li>
-                        <a href="#"> My Notes</a>
-                    </li>
-                    <li>
-                        
-                        <a href="#"> All Notes </a>
-                    </li>
-                </ul>
-            </nav>
-        </header>
-    );
+ 
+  return (
+    <header>
+      <nav>
+        <ul>
+          <li>
+            <a href="#"> Home </a>
+          </li>
+          
+          <li>
+            <a href="#"> My Notes</a>
+          </li>
+
+          <li>
+            <a href="#"> All Notes </a>
+          </li>
+          
+          <li className="login">
+
+           <a href="#"> Login/SignUp</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+  );
 }

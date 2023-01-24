@@ -7,8 +7,8 @@ header {
   position: fixed;
   left: 0;
   right: 0;
-  top: 5px;
-  height: 50px;
+
+  height: 65px;
   display: flex;
   align-items: center;
   box-shadow: 0 0 25px 0 black;
@@ -20,8 +20,9 @@ header * {
 header li {
   margin: 50px;
 }
+
 header li a {
-  color: rgb(8, 8, 38);
+  color: rgb(255, 255, 255);
   text-decoration: none;
 }
 
@@ -32,9 +33,10 @@ body {
 
 #app {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 200px);
+  grid-template-columns: repeat(auto-fill,300px);
   padding: 80px;
-  gap: 50px;
+  row-gap: 30px;
+  column-gap: 30px;
 }
 
 .note {
@@ -69,5 +71,73 @@ body {
 
 a:hover {
   color: white;
-  
+}
+
+
+
+.popup {
+  position: fixed;
+  display: flex;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.822); /* Black w/ opacity */
+}
+
+.popup-content {
+  position: relative;
+  margin: auto;
+  z-index: 3;
+  padding: 10px 10px;
+  width: 95%;
+  max-width: 30rem;
+  max-height: 33rem;
+  overflow: hidden;
+  border-radius: 15px;
+
+  font-family: "Open Sans", sans-serif;
+  background: #02b875;
+  -webkit-box-shadow: 0px 0px 19px 3px rgba(0, 0, 0, 0.08);
+  -moz-box-shadow: 0px 0px 19px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0px 0px 19px 3px rgba(0, 0, 0, 0.08);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  margin: auto;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 5px 5px;
+}
+
+.navstyle {
+  background-color: #068a59;
+  box-shadow: 8px 8px 10px rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+}
+
+.string-input {
+  border-radius: 8px;
+  border: none;
+  /* border: 2px solid #bfbfbf; */
+  font-family: "Open Sans", sans-serif;
+  width: 100%;
+  resize: none;
+  outline: none;
+  border-radius: 5px;
+  max-height: 330px;
+  caret-color: #052c42;
+}
+
+textarea::-webkit-scrollbar {
+  width: 0px;
 }
