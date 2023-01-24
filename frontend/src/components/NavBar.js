@@ -19,7 +19,7 @@ export default function NavBar(props) {
           
           <li className="login">
 
-           <a href="#"> Login/SignUp</a>
+           <a href="/login"> Login/SignUp</a>
           </li>
         </ul>
       </nav>
