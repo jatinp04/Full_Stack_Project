@@ -1,4 +1,4 @@
-import './Home.css';
+import "./Home.css";
 import NavBar from "./NavBar";
 import Note from "./Note";
 import axios from "axios";
@@ -9,14 +9,23 @@ import React, { Component } from "react";
 function App() {
   const [showModal, setShowModal] = useState(false);
   const [notes, setNotes] = useState([]);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isLogged, setIsLogged] = useState(localStorage.getItem("isLogged"));
 
   function getALLNotes() {
-    axios.get("http://localhost:5000/newnotes").then((response) => {
-      setNotes(response.data.results);
-    });
+    axios
+      .get("http://localhost:5001/newnotes", {
+        withCredentials: true,
+        headers: {
+          "Access-Control-Allow-Origin": "http://localhost:3000",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        setNotes(response.data.results);
+      });
   }
 
   // async function getALLNotes()  {
@@ -50,10 +59,14 @@ function App() {
 
   function saveNote() {
     axios
-      .post("http://localhost:5000/newnotes", {
-        description: description,
-        title: title,
-      })
+      .post(
+        "http://localhost:5001/newnotes",
+        {
+          description: description,
+          title: title,
+        },
+        { withCredentials: true }
+      )
       .then((response) => {
         setNotes(response.data.results);
       });
