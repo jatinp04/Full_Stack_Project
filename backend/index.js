@@ -6,8 +6,8 @@ const async = require("async");
 const userModel = require("./userModel");
 // const maths = require("./maths");
 const jwt = require("jsonwebtoken");
-const cookieParser = require('cookie-parser')
-const verify = require('./services/authService')
+const cookieParser = require("cookie-parser");
+const verify = require("./services/authService");
 
 require("dotenv").config();
 
@@ -18,7 +18,7 @@ const cors = require("cors");
 // const { response } = require("express");
 // const { stringify } = require("querystring");
 
-const port = process.env.BACKEND_PORT; //Backend Port Running on 5000
+const port = process.env.BACKEND_PORT; //Backend Port Running on 5001
 const secretKey = process.env.JWT_SECRET;
 
 const app = express();
@@ -26,7 +26,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
-app.use(cookieParser())
+app.use(cookieParser());
 
 MongoDB.start(); //To Start MongoDB service
 
@@ -38,7 +38,7 @@ app.get("/notes", (req, res) => {
 
 //auto , series and parallel async functions
 
-app.get("/newnotes", (req, res) => {
+app.get("/newnotes", verify, (req, res) => {
   async.auto(
     {
       notes: function (cb) {
@@ -176,16 +176,14 @@ app.post("/signup", (req, res) => {
 
 //POST Request For Login
 
-app.post("/login",(req, res) => {
+app.post("/login", (req, res) => {
   async.auto(
     {
       users: function (cb) {
         userModel.findOne(
           { email: req.body.email, password: req.body.password },
           (err, user) => {
-            
             if (err) {
-
               return cb(err);
             }
             console.log(user);
@@ -206,10 +204,10 @@ app.post("/login",(req, res) => {
       if (err) {
         return res.status(403).json({ error: err });
       }
-      console.log(results);
+      // console.log(results);
 
       if (!results.users) {
-        return res.json({ results: "unable to login" });
+        return res.status(403).json({ results: "unable to login" });
       }
       res
         .cookie("authToken", results.users, {
@@ -285,5 +283,5 @@ app.post("/submission", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log("App has been started on Port : 5000");
+  console.log("App has been started on Port : 5001");
 });
