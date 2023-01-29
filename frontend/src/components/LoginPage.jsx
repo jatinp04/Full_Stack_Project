@@ -8,13 +8,13 @@ function LoginPage() {
   const navigate = useNavigate();
 
   function setLogin(e) {
-    // console.log("Check!");
+    console.log("Check!");
     e.preventDefault(); //Prevent Reloading
     axios
       .post("http://localhost:5001/login", {
         email: email,
         password: password,
-      },{ withCredentials: true,headers:{'Access-Control-Allow-Origin': 'http://localhost:3000', 'Content-Type': 'application/json' }})
+      },{withCredentials:true})
       .then((response) => {
         if (response.status === 200) {
           //Redirect to Home

@@ -14,7 +14,9 @@ require("dotenv").config();
 const MongoDB = require("./services/databaseService");
 // const { mongo } = require("mongoose");
 const notemodel = require("./notemodel");
+
 const cors = require("cors");
+
 // const { response } = require("express");
 // const { stringify } = require("querystring");
 
@@ -22,13 +24,22 @@ const port = process.env.BACKEND_PORT; //Backend Port Running on 5001
 const secretKey = process.env.JWT_SECRET;
 
 const app = express();
+app.use(express.json());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+const corsOptions = {
+  origin: true,
+  credentials: true,
+  exposedHeaders: ["set-cookie"],
+};
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 MongoDB.start(); //To Start MongoDB service
+
+// app.use(allowCrossDomain);
 
 app.get("/notes", (req, res) => {
   let notes = res.json({
@@ -153,6 +164,7 @@ app.post("/signup", (req, res) => {
     {
       users: function (cb) {
         var userData = { email: req.body.email, password: req.body.password };
+        console.log(userData);
         // var authToken = jwt.sign(userData,secretKey)
         userData.authToken = jwt.sign(userData, secretKey);
 
@@ -211,7 +223,8 @@ app.post("/login", (req, res) => {
       }
       res
         .cookie("authToken", results.users, {
-          httpOnly: true,
+          httpOnly: false,
+          domain: "localhost",
           expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
         })
         .send(" succesfully logged in");
