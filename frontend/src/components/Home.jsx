@@ -15,17 +15,9 @@ function App() {
   const [isLogged, setIsLogged] = useState(localStorage.getItem("isLogged"));
 
   function getALLNotes() {
-    axios
-      .get("http://localhost:5001/newnotes", {
-        withCredentials: true,
-        headers: {
-          "Access-Control-Allow-Origin": "http://localhost:3000",
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        setNotes(response.data.results);
-      });
+    axios.get("http://localhost:5001/newnotes",{withCredentials:true}).then((response) => {
+      setNotes(response.data.results);
+    });
   }
 
   // async function getALLNotes()  {

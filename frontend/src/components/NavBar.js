@@ -9,7 +9,7 @@ export default function NavBar(props) {
     // console.log("Check!");
     e.preventDefault(); //Prevent Reloading
     axios
-      .get("http://localhost:5001/logout",{ withCredentials: true })
+      .get("http://localhost:5001/logout", {withCredentials:true})
       .then((response) => {
         if (response.status === 200) {
           //Redirect to Login

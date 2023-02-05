@@ -1,28 +1,29 @@
-import {React,useState} from 'react';
+import { React, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-
- 
 
 function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const [confirmPass , setConfirmPass] =useState();
-
+  const [confirmPass, setConfirmPass] = useState();
 
   function Signup(e) {
-    
     // console.log("Check!");
 
-    if(password !== confirmPass){alert("Password Not Matching")}
+    if (password !== confirmPass) {
+      alert("Password Not Matching");
+    }
     e.preventDefault(); //Prevent Reloading
     axios
-      .post("http://localhost:5001/signup", {
-        email: email,
-        password: password,
-      },{ withCredentials: true })
+      .post(
+        "http://localhost:5001/signup",
+        {
+          email: email,
+          password: password,
+        },
+        { withCredentials: true }
+      )
       .then((response) => {
         if (response.status === 200) {
           //Redirect to login
@@ -41,23 +42,35 @@ function SignupPage() {
         <h1>Signup</h1>
         <form method="post">
           <div className="txt_field">
-            <input type="text" required onChange={(e) => {
+            <input
+              type="text"
+              required
+              onChange={(e) => {
                 setEmail(e.target.value);
-              }}></input>
+              }}
+            ></input>
             <span></span>
             <label>Username</label>
           </div>
           <div className="txt_field">
-            <input type="password" required onChange={(e) => {
+            <input
+              type="password"
+              required
+              onChange={(e) => {
                 setPassword(e.target.value);
-              }}></input>
+              }}
+            ></input>
             <span></span>
             <label>Password</label>
           </div>
           <div className="txt_field">
-            <input type="password" required onChange={(e) => {
+            <input
+              type="password"
+              required
+              onChange={(e) => {
                 setConfirmPass(e.target.value);
-              }}></input>
+              }}
+            ></input>
             <span></span>
             <label>confirm Password?</label>
           </div>
@@ -67,9 +80,8 @@ function SignupPage() {
           </div>
         </form>
       </div>
-
     </>
-  )
+  );
 }
 
-export default SignupPage
+export default SignupPage;
