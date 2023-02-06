@@ -1,23 +1,33 @@
 import "./Home.css";
 import NavBar from "./NavBar";
 import Note from "./Note";
-import axios from "axios";
+import axios from "../Api";
 import { useEffect, useState } from "react";
 import React, { Component } from "react";
+import { Router, useNavigate,Navigate } from "react-router-dom";
 // import { MdOutlineAdd } from "react-icons/md";
 
 function App() {
   const [showModal, setShowModal] = useState(false);
   const [notes, setNotes] = useState([]);
-
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [isLogged, setIsLogged] = useState(localStorage.getItem("isLogged"));
+  const [authenticated, setauthenticated] = useState(null);
+
 
   function getALLNotes() {
-    axios.get("http://localhost:5001/newnotes",{withCredentials:true}).then((response) => {
+    axios.get("/newnotes",{withCredentials:true}).then((response) => {
+     if(response.status===200){
       setNotes(response.data.results);
-    });
+     }
+     else{
+      navigate("/login")
+     }
+    }).catch((err)=>{
+      console.log("Error",err);
+      navigate("/login")
+    })
   }
 
   // async function getALLNotes()  {
@@ -52,7 +62,7 @@ function App() {
   function saveNote() {
     axios
       .post(
-        "http://localhost:5001/newnotes",
+        "/newnotes",
         {
           description: description,
           title: title,
