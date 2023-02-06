@@ -1,15 +1,14 @@
-import axios from "axios";
+import axios from "../Api";
 import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export default function NavBar(props) {
   const navigate = useNavigate();
   function logout(e) {
-
-    
     // console.log("Check!");
     e.preventDefault(); //Prevent Reloading
     axios
-      .get("http://localhost:5001/logout", {withCredentials:true})
+      .get("/logout", { withCredentials: true })
       .then((response) => {
         if (response.status === 200) {
           //Redirect to Login
@@ -22,33 +21,33 @@ export default function NavBar(props) {
         }
       });
   }
-  
- 
+
   return (
     <header>
       <nav>
-        <ul>
-          <li>
-            <a href="#"> Home </a>
-          </li>
-          
-          <li>
-            <a href="#"> My Notes</a>
-          </li>
+        <h1
+          style={{
+            color: "White",
 
-          <li>
-            <a href="#"> All Notes </a>
-          </li>
-          
-          <li className="login">
+            marginLeft: "100vh",
+            marginTop: "25px",
+          }}
+        >
+          Notes App
+        </h1>
 
-           <a href="/login"> Login/SignUp</a>
-          </li>
-          <li className="login">
+        <LogoutIcon
+          className="logout"
+          style={{
+            color: "White",
 
-          <button  onClick={logout}>Logout</button>
-          </li>
-        </ul>
+            alignItems: "center",
+            marginLeft: "200vh",
+          }}
+          onClick={logout}
+        >
+          Logout
+        </LogoutIcon>
       </nav>
     </header>
   );

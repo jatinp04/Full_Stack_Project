@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import axios from "axios";
+import axios from "../Api";
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
@@ -11,7 +11,7 @@ function LoginPage() {
     console.log("Check!");
     e.preventDefault(); //Prevent Reloading
     axios
-      .post("http://localhost:5001/login", {
+      .post("/login", {
         email: email,
         password: password,
       },{withCredentials:true})
@@ -23,7 +23,7 @@ function LoginPage() {
       })
       .catch((Err) => {
         if (Err) {
-          alert("Please Try Again!");
+          alert("Invalid Credentials!");
         }
       });
   }
@@ -56,7 +56,7 @@ function LoginPage() {
           </div>
           <div className="pass">Forgot Password?</div>
           {/* <input  value="Login"  onClick={setLogin}></input> */}
-          <button onClick={setLogin}>Submit</button>
+          <button className="submit" onClick={setLogin}>Submit</button>
           <div className="signup_link">
             Not a member? <a href="/signup">Signup</a>
           </div>

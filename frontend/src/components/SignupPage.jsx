@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import axios from "axios";
+import axios from "../Api";
 import { useNavigate } from "react-router-dom";
 
 function SignupPage() {
@@ -17,7 +17,7 @@ function SignupPage() {
     e.preventDefault(); //Prevent Reloading
     axios
       .post(
-        "http://localhost:5001/signup",
+        "/signup",
         {
           email: email,
           password: password,
@@ -74,7 +74,7 @@ function SignupPage() {
             <span></span>
             <label>confirm Password?</label>
           </div>
-          <button onClick={Signup}>SignUp</button>
+          <button className="submit" onClick={Signup} >SignUp</button>
           <div className="login_link">
             Already signed up? <a href="/login">Login</a>
           </div>
