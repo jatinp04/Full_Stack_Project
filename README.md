@@ -11,7 +11,7 @@ To be able to run this app you need NODEJS and MONGODB installed on your system.
 3. Once installation is completed
 4. Then run ``nodemon server``
 
-## Running the NoteMaker React App
+## Running the Notes React App
 
 1. Move into the note-maker folder and run cmd ``npm install``
 2. Once installation is completed
